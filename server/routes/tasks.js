@@ -31,11 +31,12 @@ router.post('/', function (req, res) {
 			res.sendStatus(500);
 			console.log("Database connection failed");
 		}
-		client.query('INSERT INTO tasks (todo, todo_number) '
-	             + 'VALUES ($1, $2)',
-						    [task.todo, task.todo_number],
+		client.query('INSERT INTO tasks (todo) '
+	             + 'VALUES ($1)',
+						    [task.tasks],
 							function (err, result){
 								done();
+								console.log(result);
 
 								if (err) {
 									res.sendStatus(500);
@@ -46,5 +47,25 @@ router.post('/', function (req, res) {
 	});
 
 });
+
+router.delete('/tasks', function (req, res){
+	pg.connect(connectionString, function (err, client, done){
+		if (err) {
+			res.sendStatus(500);
+		}
+		client.query('DELETE FROM tasks ' +
+	               'WHERE id = $1',
+							 function (err, result) {
+								 done();
+
+								 if (err) {
+									 res.sendStatus(500);
+									 return;
+								 }
+								 res.sendStatus(200);
+							});
+			});
+
+	});
 
 module.exports = router;
