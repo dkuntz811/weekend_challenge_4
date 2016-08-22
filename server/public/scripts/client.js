@@ -2,11 +2,11 @@ $(document).ready(function (){
 	console.log("I'm Ready");
 	getTasks();
 	$("#txtbtn").on('click', submitTasks);
-	$("#delete").on('click', deleteTask);
-
-
-
+	$("#complete").on('click', putTasks);
+	$('#tasklist').on('click', '#delete', deleteTask);
 });
+
+//get tasks from server and append to DOM
 
 function getTasks () {
 	$.ajax({
@@ -16,9 +16,11 @@ function getTasks () {
 			console.log('GET /tasks returns', tasks);
 			tasks.forEach (function (task) {
 				var $el = $('<li id = "list"></li>');
+				$el.data('taskID', task.id);
 				$el.append('<em>'+ task.todo + '<button id = "complete">Complete</button>' + '<button id = "delete">Delete</button>' + '</em>');
 				$('#tasklist').on('click', '#complete', function(){
 					$(this).parent().css("background-color", "tan");
+					$(this).parent().css("text-decoration", "line-through");
 				})
 				$('#tasklist').append($el);
 
@@ -29,9 +31,9 @@ function getTasks () {
 			console.log('GET /tasks failed');
 		},
 	});
-
-
 }
+
+//POST tasks to server and empty form
 
 function submitTasks(){
 	var task = {};
@@ -53,15 +55,49 @@ function submitTasks(){
 	});
 }
 
+//put 'completed' into database when completed button is clicked. *****Theoretically******
+
+function putTasks () {
+	var task = {};
+	var inputs = $(this).parent().children().serializeArray();
+  $.each(inputs, function (i, field) {
+		task[field.name] = field.value;
+		console.log(task);
+	});
+	var taskID = $(this).parent().data('taskID');
+
+	$.ajax({
+		type: 'PUT',
+		url: '/tasks/' + taskID,
+		data: task,
+		sucess: function () {
+		getTasks();
+		},
+		error: function () {
+			console.log('Error PUT /tasks/' + taskID);
+		},
+
+	});
+}
+
+
+
+//delete tasks from server
 function deleteTask () {
+	var taskID = $(this).parent().parent().data('taskID');
+	console.log(this);
+	console.log(taskID);
 	$.ajax({
 		type: 'DELETE',
-		url: '/tasks',
-		data: task,
+		url: '/tasks/' + taskID,
 		success: function () {
 			console.log("DELETE SUCCESS");
-			$('#tasklist').children.empty();
-			getTasks();
+
+				$(this).parent().parent().remove();
+
+			 $('#tasklist').empty();
+			 //reload tasks to DOM
+			 getTasks();
 		},
 		error: function(){
 			console.log('DELETE FAILED');
