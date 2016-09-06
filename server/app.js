@@ -7,7 +7,7 @@ var tasks = require('./routes/tasks');
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use('/tasks', tasks);
-
+// can also use app.use('/public', express.static(dir__name + '/public/')) to replace below. 
 app.get('/*', function (req, res) {
 	var file = req.params[0] || '/views/index.html';
 	res.sendFile(path.join(__dirname, './public', file));

@@ -11,3 +11,10 @@ completed varchar(25);
 --Delete a task from tasks:
 DELETE FROM tasks,
 WHERE id = 1;
+
+
+--CREATE TABLE tasks (
+--id SERIAL PRIMARY KEY,
+--task_content varchar(235),
+--created_date date NOW;
+--)

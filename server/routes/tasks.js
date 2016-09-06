@@ -44,6 +44,7 @@ router.post('/', function (req, res) {
 									res.sendStatus(500);
 									console.log(err);
 								}
+								  //201 means created
 						      res.sendStatus(201);
 							});
 	});
@@ -51,7 +52,7 @@ router.post('/', function (req, res) {
 });
 // PUT completed to database
 router.put('/:id', function (req, res) {
-	var task = req.body;
+	var task = req.params.id;
 	console.log(req.body);
 	console.log("Body: ", task);
 
@@ -61,9 +62,9 @@ router.put('/:id', function (req, res) {
 			console.log("Database connection failed");
 		}
 
-		client.query('UPDATE tasks (task, completed) '
-	             + 'VALUES (COMPLETED!) id = ($1)',
-						    [task.task, task.completed],
+		client.query('UPDATE tasks SET completed '
+	             + 'WHERE id = ($1)',
+						    [task],
 
 
 							function (err, result){
@@ -98,7 +99,7 @@ router.delete('/:id', function (req, res){
 									 res.sendStatus(500);
 									 return;
 								 }
-								 res.sendStatus(200);
+								 res.sendStatus(202);
 							});
 			});
 

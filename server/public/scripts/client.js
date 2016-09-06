@@ -2,11 +2,13 @@ $(document).ready(function (){
 	console.log("I'm Ready");
 	getTasks();
 	$("#txtbtn").on('click', submitTasks);
-	$("#complete").on('click', putTasks);
+	$("#complete").on('click', '#complete', putTasks);
 	$('#tasklist').on('click', '#delete', deleteTask);
 });
 
 //get tasks from server and append to DOM
+
+//shorthand ajax request : $.get('/tasks', appendTasks)
 
 function getTasks () {
 	$.ajax({
@@ -57,24 +59,48 @@ function submitTasks(){
 
 //put 'completed' into database when completed button is clicked. *****Theoretically******
 
-function putTasks () {
-	var task = {};
-	var inputs = $(this).parent().children().serializeArray();
-  $.each(inputs, function (i, field) {
-		task[field.name] = field.value;
-		console.log(task);
-	});
-	var taskID = $(this).parent().data('taskID');
+// function putTasks () {
+// 	var task = {};
+// 	var inputs = $(this).parent().children().serializeArray();
+//   $.each(inputs, function (i, field) {
+// 		task[field.name] = field.value;
+// 		console.log(task);
+// 	});
+// 	var taskID = $(this).parent().data('taskID');
+//
+// 	$.ajax({
+// 		type: 'PUT',
+// 		url: '/tasks/' + taskID,
+// 		data: task,
+// 		sucess: function () {
+// 		getTasks();
+// 		},
+// 		error: function () {
+// 			console.log('Error PUT /tasks/' + taskID);
+// 		},
+//
+// 	});
+// }
 
+function putTasks () {
+	var taskID = $(this).parent().parent().data('taskID');
+	console.log(this);
+	console.log(taskID);
 	$.ajax({
 		type: 'PUT',
 		url: '/tasks/' + taskID,
 		data: task,
-		sucess: function () {
-		getTasks();
+		success: function () {
+			console.log("PUT,  SUCCESS");
+
+				// $(this).parent().parent().remove();
+
+			//  $('#tasklist').empty();
+			 //reload tasks to DOM
+			 getTasks();
 		},
-		error: function () {
-			console.log('Error PUT /tasks/' + taskID);
+		error: function(){
+			console.log('PUT FAILED');
 		},
 
 	});
