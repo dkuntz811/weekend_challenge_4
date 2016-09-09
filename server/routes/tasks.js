@@ -61,10 +61,10 @@ router.put('/:id', function (req, res) {
 			res.sendStatus(500);
 			console.log("Database connection failed");
 		}
-
-		client.query('UPDATE tasks SET completed '
-	             + 'WHERE id = ($1)',
+        console.log('process is stopping here');
+		client.query('UPDATE tasks SET completed = completed WHERE id = ($1)',
 						    [task],
+
 
 
 							function (err, result){
